@@ -88,7 +88,7 @@ namespace NetCoreIdentity_1.Controllers
                     await _userManager.AddToRoleAsync(appUser, "Member"); //Register olan kullanıcı artık bu kod sayesinde direkt Member rolüne sahip olacaktır... 
                     #endregion
 
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Register");
 
                 }
                 foreach (IdentityError error in result.Errors)
@@ -101,9 +101,13 @@ namespace NetCoreIdentity_1.Controllers
             return View(model);
         }
 
-        public IActionResult SignIn()
+        public IActionResult SignIn(string returnUrl)
         {
-            return View();
+            UserSignInRequestModel usModel = new() 
+            {
+                ReturnUrl = returnUrl
+            };
+            return View(usModel);
         }
 
         [HttpPost]

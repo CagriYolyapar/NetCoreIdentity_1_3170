@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Models\Admins\AppRoles\PageVms\" />
     <Folder Include="Models\ViewModels\AppUsers\PageVms\" />
   </ItemGroup>
 

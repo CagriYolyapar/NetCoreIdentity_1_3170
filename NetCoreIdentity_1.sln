@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{17302525-CF0E-4653-8FEE-4EBA21F1318A}"
 	ProjectSection(SolutionItems) = preProject
 		Notlar.txt = Notlar.txt
+		Odev.txt = Odev.txt
 		ProjeAdimlari.txt = ProjeAdimlari.txt
 	EndProjectSection
 EndProject

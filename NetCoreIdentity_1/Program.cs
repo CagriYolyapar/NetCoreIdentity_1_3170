@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using NetCoreIdentity_1.Models.ContextClasses;
 using NetCoreIdentity_1.Models.Entities;
 
@@ -53,7 +53,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication();
+app.UseAuthentication(); //Burada sakın Authentication'i unutmayın...CÜnkü Authorization'dan(Yetkiden önce) kimlik tanınması gerekir (Authentication)
 
 app.UseAuthorization();
 

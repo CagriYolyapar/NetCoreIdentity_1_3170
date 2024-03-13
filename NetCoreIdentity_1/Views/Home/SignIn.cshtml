@@ -1,0 +1,35 @@
+﻿@model UserSignInRequestModel
+
+<form asp-action="SignIn" asp-controller="Home" method="post" class="p-3 w-75 m-auto">
+
+    <div class="mb-3">
+        <label>Kullanıcı ismi giriniz</label>
+        <span class="text-danger" asp-validation-for="UserName"></span>
+        <input asp-for="UserName" class="form-control"/>
+    </div>
+
+    <div class="mb-3">
+        <label>Sifre gir</label>
+        <span class="text-danger" asp-validation-for="Password"></span>
+        <input asp-for="Password" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <input type="checkbox" asp-for="RememberMe" class="form-check-input"/>
+
+        <label class="form-check-label">
+            Remember Me?
+        </label>
+    </div>
+
+
+    <div class="mb-3">
+        <button class="btn btn-primary"> Giriş yap</button>
+    </div>
+
+
+    <div class="text-danger" asp-validation-summary="ModelOnly">
+
+    </div>
+
+</form>

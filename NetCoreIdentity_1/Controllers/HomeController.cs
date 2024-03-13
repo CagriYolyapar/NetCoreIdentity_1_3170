@@ -61,6 +61,8 @@ namespace NetCoreIdentity_1.Controllers
         {
             if (ModelState.IsValid)
             {
+
+                //Mapping işlemi (UserRegisterRequestModel tipindeki model'deki bilgileri AppUser class'ından instance alarak oraya aktarıyoruz)
                 AppUser appUser = new()
                 {
                     UserName = model.UserName,
@@ -109,7 +111,7 @@ namespace NetCoreIdentity_1.Controllers
         {
             if (ModelState.IsValid)
             {
-                AppUser appUser = await _userManager.FindByEmailAsync(model.UserName); //await ile bir Task'in direkt sonucunu beklediginiz icin onu elde edersiniz...
+                AppUser appUser = await _userManager.FindByNameAsync(model.UserName); //await ile bir Task'in direkt sonucunu beklediginiz icin onu elde edersiniz...
 
                 SignInResult result = await _signInManager.PasswordSignInAsync(appUser, model.Password, model.RememberMe, true);
                 
@@ -157,10 +159,11 @@ namespace NetCoreIdentity_1.Controllers
                     }
 
                     ModelState.AddModelError("", message);
+                    
                 }
 
             }
-            return RedirectToAction("Index");
+            return View(model);
         }
 
 

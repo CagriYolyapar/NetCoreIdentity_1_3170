@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NetCoreIdentity_1.Models;
 using NetCoreIdentity_1.Models.ContextClasses;
 using NetCoreIdentity_1.Models.Entities;
 using NetCoreIdentity_1.Models.ViewModels.AppUsers.PureVms;
 using System.Diagnostics;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace NetCoreIdentity_1.Controllers
 {
@@ -93,11 +95,102 @@ namespace NetCoreIdentity_1.Controllers
                 }
 
 
+            }
+            return View(model);
+        }
+
+        public IActionResult SignIn()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SignIn(UserSignInRequestModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                AppUser appUser = await _userManager.FindByEmailAsync(model.UserName); //await ile bir Task'in direkt sonucunu beklediginiz icin onu elde edersiniz...
+
+                SignInResult result = await _signInManager.PasswordSignInAsync(appUser, model.Password, model.RememberMe, true);
+                
+                if (result.Succeeded)
+                {
+                    if (!string.IsNullOrWhiteSpace(model.ReturnUrl))
+                    {
+                        return Redirect(model.ReturnUrl);
+                    }
+
+                    IList<string> roles = await _userManager.GetRolesAsync(appUser);
+
+                    if (roles.Contains("Admin"))
+                    {
+                        return RedirectToAction("AdminPanel"); //Eger gitmek istediginiz sayfa bir baska Area'da ise routeData parametresine Anonymus type olarak argüman vererek gönderirsiniz return RedirectToAction("AdminPanel",new {Area = "Admin"})
+                    }
+                    else if (roles.Contains("Member"))
+                    {
+                        return RedirectToAction("MemberPanel");
+                    }
+
+                    return RedirectToAction("Panel");
+
+                    // localhost:1244//Admin/Home/Index/2
+
                 }
-                return View(model);
+                else if (result.IsLockedOut)
+                {
+                    DateTimeOffset? lockOutEndDate = await _userManager.GetLockoutEndDateAsync(appUser);
+
+                    ModelState.AddModelError("", $"Hesabınız {(lockOutEndDate.Value.UtcDateTime - DateTime.UtcNow).Minutes} dakika süreyle askıya alınmıstır");
+                }
+                else
+                {
+                    string message = "";
+                    if(appUser != null)
+                    {
+                        int maxFailedAttempts = _userManager.Options.Lockout.MaxFailedAccessAttempts; //middleware'deki maksimum hata sayınız...
+
+                        message = $"Eger {maxFailedAttempts - await _userManager.GetAccessFailedCountAsync(appUser)} kez daha yanlıs giriş yaparsanız hesabınız gecici olarak askıya alınacaktır";
+                    }
+                    else
+                    {
+                        message = "Kullanıcı bulunamadı";
+                    }
+
+                    ModelState.AddModelError("", message);
+                }
+
+            }
+            return RedirectToAction("Index");
         }
 
 
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> SignOut()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index");
+        }
+
+        [Authorize(Roles ="Admin")]
+        public IActionResult AdminPanel()
+        {
+            return View();
+        }
+
+        [Authorize(Roles ="Member")]
+        public IActionResult MemberPanel()
+        {
+            return View();
+        }
+
+        public IActionResult Panel()
+        {
+            return View();
+        }
 
     }
 }

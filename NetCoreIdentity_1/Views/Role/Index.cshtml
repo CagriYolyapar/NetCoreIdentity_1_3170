@@ -1,0 +1,22 @@
+﻿@model List<AppRole>
+
+
+    <a asp-action="Create" asp-controller="Role">Yeni Rol Ekle</a>
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Rol Ismi</th>
+                <th>Yaratılma Tarihi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (AppRole item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.CreatedDate</td>
+            </tr>
+        }
+        </tbody>
+    </table>
